@@ -3,6 +3,9 @@ RewriteEngine On
 
 RewriteBase /ugc_incapacidades/
 
+# Servir archivos de uploads directamente (PDFs adjuntos)
+RewriteRule ^uploads/ - [L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]

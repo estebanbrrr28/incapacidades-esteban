@@ -85,7 +85,7 @@ $baseUrl    = Config::baseUrl();
   </form>
 </div>
 </div>
-<script>
+<script <?= Security::scriptNonceAttr() ?>>
 (function(){
   var hoy=<?= json_encode($hoy) ?>,ini=document.getElementById('fecha_inicio'),fin=document.getElementById('fecha_fin'),dias=document.getElementById('duracion_dias'),horas=document.getElementById('duracion_horas');
   function calcularDias(){

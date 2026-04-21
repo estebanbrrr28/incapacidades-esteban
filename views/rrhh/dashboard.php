@@ -72,7 +72,7 @@ require __DIR__ . '/../shared/tabla_solicitudes.php';
 ?>
 </div>
 
-<script>
+<script <?= \Core\Security::scriptNonceAttr() ?>>
 (function () {
   var tarjetas = document.querySelectorAll('#rrhh-stat-cards [data-filter]');
   var secPendientes = document.getElementById('rrhh-section-pendientes');

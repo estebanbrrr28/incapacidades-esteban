@@ -1,5 +1,6 @@
 <?php
 use Core\Config;
+use Core\Security;
 
 require_once __DIR__ . '/../shared/badge_estado.php';
 
@@ -145,8 +146,8 @@ $excelUrl = $baseUrl . '/exportar/todas/excel' . ($query ? '?' . $query : '');
 
 <div id="analyticsTableWrap"><?php $filas = $ultimas; require __DIR__ . '/../shared/tabla_solicitudes.php'; ?></div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script <?= Security::scriptNonceAttr() ?>>
 document.addEventListener('DOMContentLoaded',()=>{
   const baseUrl = <?= json_encode($baseUrl) ?>;
   const initialData = <?= $analyticsJson ?: '{}' ?>;

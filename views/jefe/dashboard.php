@@ -115,7 +115,7 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
         <a href="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/ver" class="btn btn-outline btn-sm">Ver</a>
         <?php if ($s['ESTADO'] === 'PENDIENTE_JEFE'): ?>
           <a href="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/editar" class="btn btn-gray btn-sm">Editar</a>
-          <form method="post" action="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/eliminar" class="inline-form" onsubmit="return confirm('¿Eliminar?')">
+          <form method="post" action="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/eliminar" class="inline-form" data-confirm="¿Eliminar esta solicitud?">
             <?= Security::csrfField() ?>
             <button type="submit" class="btn btn-red btn-sm">Eliminar</button>
           </form>
@@ -129,7 +129,7 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
 <?php endif; ?>
 </div>
 
-<script>
+<script <?= Security::scriptNonceAttr() ?>>
 (function () {
   var tarjetas = document.querySelectorAll('#jefe-stat-cards [data-filter]');
   var secciones = {
