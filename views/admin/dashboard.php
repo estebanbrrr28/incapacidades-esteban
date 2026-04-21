@@ -5,13 +5,6 @@ use Core\Config;
 require_once __DIR__ . '/../shared/badge_estado.php';
 $baseUrl = Config::baseUrl();
 $labels = ['PENDIENTE_JEFE' => 'Pendiente Jefe', 'APROBADO_JEFE' => 'Aprobado Jefe', 'RECHAZADO_JEFE' => 'Rechazado Jefe', 'APROBADO_RRHH' => 'Aprobado RRHH', 'RECHAZADO_RRHH' => 'Rechazado RRHH'];
-$rolesDisponibles = $rolesDisponibles ?? [
-  ROL_ADMIN => 'Administrador',
-  ROL_RRHH => 'Talento Humano',
-  ROL_JEFE => 'Jefe Inmediato',
-  ROL_EMPLEADO => 'Solicitante',
-];
-$rolLabelLookup = $rolesDisponibles;
 $icons = [
   'PENDIENTE_JEFE' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
   'APROBADO_JEFE' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
@@ -43,107 +36,32 @@ $total = array_sum($stats ?? []);
     <a href="<?= $baseUrl ?>/exportar/todas/excel" class="btn btn-green">
       Descargar reporte Excel
     </a>
+
+    <a href="<?= $baseUrl ?>/dashboard/roles" class="btn btn-green">
+      Gestionar roles
+    </a>
   </div>
 
 </div>
-
-<section class="analytics-filter-card role-manager-card animate-fade-up">
-  <div class="section-header role-manager-header">
-    <div>
-      <h2>Gestion de roles</h2>
-      <p class="role-manager-copy">Busca una cédula, revisa el rol actual y cambia el acceso sin tocar Oracle.</p>
-    </div>
-  </div>
-
-  <form method="get" action="<?= $baseUrl ?>/dashboard" class="analytics-filter-grid role-manager-search">
-    <div class="analytics-field role-manager-field">
-      <label for="cedula">Cédula</label>
-      <input id="cedula" name="cedula" type="text" inputmode="numeric" placeholder="Ej: 1234567890" value="<?= htmlspecialchars($cedulaBusqueda ?? '') ?>">
-    </div>
-    <div class="role-manager-actions">
-      <button type="submit" class="btn btn-green">Buscar usuario</button>
-      <a href="<?= $baseUrl ?>/dashboard" class="btn btn-outline">Limpiar</a>
-    </div>
-  </form>
-
-  <?php if (!empty($roleSearchError)): ?>
-    <div class="flash flash-err role-manager-feedback">
-      <?= htmlspecialchars($roleSearchError) ?>
-    </div>
-  <?php endif; ?>
-
-  <?php if (!empty($usuarioRol)): ?>
-    <div class="detail-card role-result-card">
-      <dl class="role-detail-list">
-        <div class="detail-row">
-          <dt>Nombre</dt>
-          <dd><?= htmlspecialchars($usuarioRol['nombre'] ?? '') ?></dd>
-        </div>
-        <div class="detail-row">
-          <dt>Cédula</dt>
-          <dd><?= htmlspecialchars($usuarioRol['cedula'] ?? '') ?></dd>
-        </div>
-        <div class="detail-row">
-          <dt>Centro de costo</dt>
-          <dd><?= htmlspecialchars($usuarioRol['centro_costo'] ?? '') ?></dd>
-        </div>
-        <div class="detail-row">
-          <dt>Nivel</dt>
-          <dd><?= htmlspecialchars((string) ($usuarioRol['nivel'] ?? 0)) ?></dd>
-        </div>
-        <div class="detail-row">
-          <dt>Rol actual</dt>
-          <dd><?= htmlspecialchars($rolLabelLookup[$usuarioRol['rol_actual'] ?? ''] ?? 'Sin rol') ?></dd>
-        </div>
-        <div class="detail-row">
-          <dt>Rol base Oracle</dt>
-          <dd><?= htmlspecialchars($rolLabelLookup[$usuarioRol['rol_base'] ?? ''] ?? 'Sin rol') ?></dd>
-        </div>
-        <div class="detail-row">
-          <dt>Override manual</dt>
-          <dd><?= htmlspecialchars(isset($usuarioRol['rol_manual']) ? ($rolLabelLookup[$usuarioRol['rol_manual']] ?? (string) $usuarioRol['rol_manual']) : 'Automatico') ?></dd>
-        </div>
-      </dl>
-
-      <form method="post" action="<?= $baseUrl ?>/admin/roles" class="role-update-form">
-        <?= \Core\Security::csrfField() ?>
-        <input type="hidden" name="cedula" value="<?= htmlspecialchars($usuarioRol['cedula'] ?? '') ?>">
-        <div class="analytics-field">
-          <label for="rol">Nuevo rol</label>
-          <select id="rol" name="rol">
-            <option value="auto" <?= empty($usuarioRol['rol_manual']) ? 'selected' : '' ?>>Automatico (según Oracle)</option>
-            <?php foreach ($rolesDisponibles as $roleKey => $roleLabel): ?>
-              <option value="<?= htmlspecialchars($roleKey) ?>" <?= (($usuarioRol['rol_manual'] ?? '') === $roleKey) ? 'selected' : '' ?>><?= htmlspecialchars($roleLabel) ?></option>
-            <?php endforeach; ?>
-          </select>
-          <span class="field-hint">El cambio afecta el acceso en el próximo inicio de sesión. Si cambias tu propio rol, esta sesión se ajusta al guardar.</span>
-        </div>
-        <div class="role-manager-actions role-manager-actions--inline">
-          <button type="submit" class="btn btn-green">Guardar rol</button>
-        </div>
-      </form>
-    </div>
-  <?php endif; ?>
-</section>
 
 
 <div class="stats-row animate-fade-up">
 <?php foreach ($labels as $key => $lbl): ?>
-  <div class="stat-card">
+  <a href="<?= $baseUrl ?>/solicitudes?estado=<?= urlencode($key) ?>#admin-requests-section" class="stat-card stat-card-link <?= (($filtros['estado'] ?? '') === $key) ? 'is-active' : '' ?>">
     <div class="stat-icon"><?= $icons[$key] ?></div>
     <div class="num"><?= $stats[$key] ?? 0 ?></div>
     <div class="lbl"><?= $lbl ?></div>
-  </div>
+  </a>
 <?php endforeach; ?>
-  <div class="stat-card">
+  <a href="<?= $baseUrl ?>/solicitudes#admin-requests-section" class="stat-card stat-card-link <?= empty($filtros['estado']) ? 'is-active' : '' ?>">
     <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
     <div class="num"><?= $total ?></div>
     <div class="lbl">Total Solicitudes</div>
-  </div>
+  </a>
 </div>
 
-<div class="section-header">
-  <h2>Todas las solicitudes</h2>
+<div id="admin-requests-section" class="section-header">
+  <h2><?= !empty($filtros['estado']) ? 'Solicitudes filtradas por estado' : 'Todas las solicitudes' ?></h2>
   <form method="get" action="<?= $baseUrl ?>/solicitudes" class="filter-form">
     <select name="estado" class="filter-select">
       <option value="">Todos los estados</option>

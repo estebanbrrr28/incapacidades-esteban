@@ -27,34 +27,7 @@ final class DashboardController extends Controller
                 $stats = $model->contarPorEstado();
                 $todas = $model->getAll();
                 $filtros = ['estado' => '', 'tipo' => ''];
-                $empleadoModel = new EmpleadoModel();
-                $cedulaBusqueda = $this->sanitizeNit($_GET['cedula'] ?? '');
-                $usuarioRol = null;
-                $roleSearchError = null;
-
-                if ($cedulaBusqueda !== '') {
-                    $usuarioRol = $empleadoModel->getDetalleRol($cedulaBusqueda);
-                    if ($usuarioRol === null) {
-                        $roleSearchError = 'No se encontró un usuario activo con esa cédula.';
-                    }
-                }
-
-                $rolesDisponibles = $this->getRoleLabels();
-
-                $this->render(
-                    'admin/dashboard',
-                    compact(
-                        'user',
-                        'stats',
-                        'todas',
-                        'tipos',
-                        'filtros',
-                        'cedulaBusqueda',
-                        'usuarioRol',
-                        'roleSearchError',
-                        'rolesDisponibles'
-                    )
-                );
+                $this->render('admin/dashboard', compact('user', 'stats', 'todas', 'tipos', 'filtros'));
                 break;
 
             case ROL_RRHH:
@@ -101,11 +74,11 @@ final class DashboardController extends Controller
 
         $cedula = $this->sanitizeNit($_POST['cedula'] ?? '');
         $rolSolicitado = Security::sanitizeString($_POST['rol'] ?? '');
-        $redirectPath = '/dashboard' . ($cedula !== '' ? '?cedula=' . urlencode($cedula) : '');
+        $redirectPath = '/dashboard/roles' . ($cedula !== '' ? '?cedula=' . urlencode($cedula) : '');
 
         if ($cedula === '') {
             Flash::error('Ingresa una cédula válida para cambiar el rol.');
-            $this->redirect('/dashboard');
+            $this->redirect('/dashboard/roles');
         }
 
         $empleadoModel = new EmpleadoModel();
@@ -138,6 +111,31 @@ final class DashboardController extends Controller
         }
 
         $this->redirect($redirectPath);
+    }
+
+    public function roles(): void
+    {
+        $this->requireRole([ROL_ADMIN]);
+
+        $user = $this->user();
+        $empleadoModel = new EmpleadoModel();
+        $cedulaBusqueda = $this->sanitizeNit($_GET['cedula'] ?? '');
+        $usuarioRol = null;
+        $roleSearchError = null;
+
+        if ($cedulaBusqueda !== '') {
+            $usuarioRol = $empleadoModel->getDetalleRol($cedulaBusqueda);
+            if ($usuarioRol === null) {
+                $roleSearchError = 'No se encontró un usuario activo con esa cédula.';
+            }
+        }
+
+        $rolesDisponibles = $this->getRoleLabels();
+
+        $this->render(
+            'admin/roles',
+            compact('user', 'cedulaBusqueda', 'usuarioRol', 'roleSearchError', 'rolesDisponibles')
+        );
     }
 
     public function analytics(): void

@@ -19,6 +19,7 @@ final class Router
             '/login'                         => [AuthController::class, 'loginForm'],
             '/dashboard'                     => [DashboardController::class, 'index'],
             '/dashboard/analitica'           => [DashboardController::class, 'analytics'],
+            '/dashboard/roles'               => [DashboardController::class, 'roles'],
             '/api/dashboard/analitica'       => [DashboardController::class, 'analyticsData'],
             '/solicitud/crear'               => [SolicitudController::class, 'crearForm'],
             '/solicitudes'                   => [DashboardController::class, 'listar'],

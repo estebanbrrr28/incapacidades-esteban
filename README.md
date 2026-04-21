@@ -1,4 +1,4 @@
-# Sistema de Solicitudes UGC - v2.0
+# Sistema de Solicitudes UGC - Esteban-Mateo
 
 Sistema de gestión de solicitudes de permisos e incapacidades para la Universidad La Gran Colombia.
 
