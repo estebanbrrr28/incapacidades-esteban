@@ -3,22 +3,14 @@ use Core\Config;
 use Core\Security;
 
 $baseUrl = Config::baseUrl();
+$logoUrl = $baseUrl . '/public/img/escudo-41a28286.png';
 ?>
 <div class="login-container">
   <div class="login-bg-pattern"></div>
   <div class="login-card animate-fade-up">
     <div class="login-brand">
       <div class="brand-icon">
-        <svg viewBox="0 0 80 80" width="60" height="60">
-          <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#0a5a1f"/>
-              <stop offset="100%" style="stop-color:#128b3b"/>
-            </linearGradient>
-          </defs>
-          <rect width="80" height="80" rx="16" fill="url(#grad1)"/>
-          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="26" font-weight="800">UGC</text>
-        </svg>
+        <img src="<?= $logoUrl ?>" alt="Logo Universidad La Gran Colombia" class="login-logo"/>
       </div>
       <h1 class="brand-title">Portal de Solicitudes</h1>
       <p class="brand-subtitle">Permisos e Incapacidades</p>

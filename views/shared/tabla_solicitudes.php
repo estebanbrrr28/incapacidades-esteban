@@ -27,12 +27,15 @@ $baseUrl = Config::baseUrl();
       <tr>
         <td data-label="#"><?= $s['ID'] ?></td>
         <td data-label="Empleado"><?= htmlspecialchars($s['NIT_EMPLEADO']) ?></td>
-        <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?> <?= !empty($s['RUTA_COMPROBANTE']) ? '<span title="Tiene PDF adjunto">📎</span>' : '' ?></td>
+        <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?></td>
         <td data-label="Inicio"><?= substr($s['FECHA_INICIO'], 0, 10) ?></td>
         <td data-label="Fin"><?= substr($s['FECHA_FIN'], 0, 10) ?></td>
         <td data-label="Estado"><?= badgeEstado($s['ESTADO']) ?></td>
-        <td>
+        <td class="actions-cell">
           <a href="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/ver" class="btn btn-outline btn-sm">Ver</a>
+          <?php if (!empty($s['RUTA_COMPROBANTE'])): ?>
+            <a href="<?= $baseUrl ?>/<?= htmlspecialchars($s['RUTA_COMPROBANTE']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Ver PDF</a>
+          <?php endif; ?>
         </td>
       </tr>
     <?php endforeach; ?>

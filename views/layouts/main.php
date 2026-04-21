@@ -11,6 +11,8 @@ $rolesLabel = [ROL_ADMIN => 'Administrador', ROL_RRHH => 'Talento Humano', ROL_J
 $rolLabel   = $rolesLabel[$user['rol'] ?? ''] ?? 'Usuario';
 $baseUrl    = Config::baseUrl();
 $cssUrl     = $baseUrl . '/public/css/ugc.css';
+$logoUrl    = $baseUrl . '/public/img/escudo-41a28286.png';
+$showPrimaryNav = ($user['rol'] ?? '') !== ROL_EMPLEADO;
 ?><!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,14 +25,14 @@ $cssUrl     = $baseUrl . '/public/css/ugc.css';
 </head>
 <body>
 <header class="ugc-header">
+  <?php if ($showPrimaryNav): ?>
   <button class="menu-toggle" aria-label="Menú" onclick="document.querySelector('.ugc-header nav').classList.toggle('nav-open')">
     <span></span><span></span><span></span>
   </button>
-  <svg width="42" height="42" viewBox="0 0 80 80" fill="none" aria-label="UGC">
-    <rect width="80" height="80" rx="10" fill="rgba(255,255,255,.15)"/>
-    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="23" font-weight="800" font-family="Inter,Arial">UGC</text>
-  </svg>
+  <?php endif; ?>
+  <img src="<?= $logoUrl ?>" alt="Logo Universidad La Gran Colombia" class="header-logo"/>
   <div class="brand">UNIVERSIDAD<small>La Gran Colombia</small></div>
+  <?php if ($showPrimaryNav): ?>
   <nav>
     <a href="<?= $baseUrl ?>/dashboard">Inicio</a>
     <?php if (in_array($user['rol'] ?? '', [ROL_ADMIN, ROL_RRHH, ROL_JEFE], true)): ?>
@@ -40,6 +42,7 @@ $cssUrl     = $baseUrl . '/public/css/ugc.css';
       <a href="<?= $baseUrl ?>/solicitud/crear">+ Nueva solicitud</a>
     <?php endif; ?>
   </nav>
+  <?php endif; ?>
   <!-- Notificaciones -->
   <div class="notificacion-wrap">
     <button class="notificacion-bell" id="notifBell" aria-label="Notificaciones">
@@ -94,7 +97,7 @@ $cssUrl     = $baseUrl . '/public/css/ugc.css';
 <footer class="ugc-footer">
   <div class="footer-content">
     <div class="footer-brand">
-      <span class="footer-logo">UGC</span>
+      <img src="<?= $logoUrl ?>" alt="Logo Universidad La Gran Colombia" class="footer-logo-img"/>
       <span class="footer-name">Universidad La Gran Colombia</span>
     </div>
     <div class="footer-links">

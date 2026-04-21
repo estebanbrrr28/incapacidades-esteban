@@ -4,6 +4,7 @@ use Core\Security;
 
 $baseUrl = Config::baseUrl();
 $cssUrl  = $baseUrl . '/public/css/ugc.css';
+$logoUrl = $baseUrl . '/public/img/escudo-41a28286.png';
 ?><!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,10 +17,7 @@ $cssUrl  = $baseUrl . '/public/css/ugc.css';
 </head>
 <body>
 <header class="ugc-header">
-  <svg width="42" height="42" viewBox="0 0 80 80" fill="none" aria-label="UGC">
-    <rect width="80" height="80" rx="10" fill="rgba(255,255,255,.15)"/>
-    <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="23" font-weight="800" font-family="Inter,Arial">UGC</text>
-  </svg>
+  <img src="<?= $logoUrl ?>" alt="Logo Universidad La Gran Colombia" class="header-logo"/>
   <div class="brand">UNIVERSIDAD<small>La Gran Colombia</small></div>
 </header>
 <?= $content ?>

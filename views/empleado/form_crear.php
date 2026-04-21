@@ -12,7 +12,8 @@ $baseUrl    = Config::baseUrl();
   <h1 class="page-title">Nueva Solicitud de Permiso</h1>
   <a href="<?= $baseUrl ?>/dashboard" class="btn btn-outline btn-sm">Volver</a>
 </div>
-<div class="form-card animate-fade-up">
+<div class="form-shell animate-fade-up">
+<div class="form-card">
   <?php if (!$esAprendiz && !empty($user['nombre_jefe'])): ?>
   <div class="info-jefe">
     <div><strong>Jefe asignado:</strong> <?= htmlspecialchars($user['nombre_jefe']) ?></div>
@@ -51,8 +52,8 @@ $baseUrl    = Config::baseUrl();
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Duración en horas</label><input type="number" name="duracion_horas" min="0" max="999" step="0.5" placeholder="Ej. 4"/></div>
-      <div class="form-group"><label>Duración en días</label><input type="number" name="duracion_dias" min="0" max="365" step="0.5" placeholder="Ej. 2"/></div>
+      <div class="form-group"><label>Duración en horas</label><input type="number" name="duracion_horas" id="duracion_horas" min="0" max="8" step="0.5" placeholder="Ej. 4"/><span class="field-hint">Máximo permitido: 8 horas</span></div>
+      <div class="form-group"><label>Duración en días <span class="field-autocalc">Calculado</span></label><input type="number" name="duracion_dias" id="duracion_dias" min="0" max="365" step="0.5" placeholder="Ej. 2" readonly/></div>
     </div>
     <div class="form-group"><label>Observaciones</label><textarea name="observaciones" rows="4" placeholder="Describe el motivo..."></textarea></div>
     <div class="form-group">
@@ -83,15 +84,32 @@ $baseUrl    = Config::baseUrl();
     </div>
   </form>
 </div>
+</div>
 <script>
 (function(){
-  var hoy=<?= json_encode($hoy) ?>,ini=document.getElementById('fecha_inicio'),fin=document.getElementById('fecha_fin');
+  var hoy=<?= json_encode($hoy) ?>,ini=document.getElementById('fecha_inicio'),fin=document.getElementById('fecha_fin'),dias=document.getElementById('duracion_dias'),horas=document.getElementById('duracion_horas');
+  function calcularDias(){
+    if(!ini.value||!fin.value||fin.value<ini.value){dias.value='';return;}
+    var inicio=new Date(ini.value+'T00:00:00');
+    var cierre=new Date(fin.value+'T00:00:00');
+    var diff=Math.round((cierre-inicio)/86400000)+1;
+    dias.value=diff>0?diff:'';
+  }
+  function validarHoras(){
+    if(!horas||horas.value==='')return true;
+    if(parseFloat(horas.value)>8){horas.value='8';alert('La duración en horas no puede ser mayor a 8.');return false;}
+    return true;
+  }
   ini.min=hoy;fin.min=hoy;
-  ini.addEventListener('change',function(){fin.min=ini.value||hoy;if(fin.value&&fin.value<ini.value)fin.value=ini.value;});
+  ini.addEventListener('change',function(){fin.min=ini.value||hoy;if(fin.value&&fin.value<ini.value)fin.value=ini.value;calcularDias();});
+  fin.addEventListener('change',calcularDias);
+  horas.addEventListener('change',validarHoras);
   document.getElementById('formSolicitud').addEventListener('submit',function(e){
     if(ini.value<hoy){e.preventDefault();alert('La fecha de inicio no puede ser anterior a hoy.');return;}
     if(fin.value&&fin.value<ini.value){e.preventDefault();alert('La fecha fin no puede ser anterior al inicio.');}
+    if(!validarHoras()){e.preventDefault();return;}
   });
+  calcularDias();
 
   // File upload handling
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

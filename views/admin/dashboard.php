@@ -25,6 +25,10 @@ $total = array_sum($stats ?? []);
   </div>
 
   <div style="display:flex;gap:10px;">
+    <a href="<?= $baseUrl ?>/dashboard/analitica" class="btn btn-outline">
+      Ver analitica
+    </a>
+
     <a href="<?= $baseUrl ?>/solicitud/crear" class="btn btn-green">
       + Nueva solicitud
     </a>

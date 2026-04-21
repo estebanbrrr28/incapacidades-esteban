@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Exportar\Admin;
 
 use Core\Controller;
+use Core\Security;
 use App\Exportar\Admin\ExportModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -23,8 +24,26 @@ final class ExportController extends Controller
 
     public function todasExcel(): void
     {
-        $rows = (new ExportModel())->getTodasLasSolicitudes();
+        $this->requireRole([ROL_ADMIN, ROL_RRHH, ROL_JEFE]);
+        $rows = (new ExportModel())->getTodasLasSolicitudes($this->obtenerFiltros());
         $this->generarExcelPorEstado($rows, 'reporte_solicitudes');
+    }
+
+    private function obtenerFiltros(): array
+    {
+        return [
+            'estado' => Security::sanitizeString($_GET['estado'] ?? ''),
+            'tipo' => Security::sanitizeString($_GET['tipo'] ?? ''),
+            'nit' => Security::sanitizeString($_GET['nit'] ?? ''),
+            'fecha_desde' => $this->sanitizeDate($_GET['fecha_desde'] ?? ''),
+            'fecha_hasta' => $this->sanitizeDate($_GET['fecha_hasta'] ?? ''),
+        ];
+    }
+
+    private function sanitizeDate(string $value): string
+    {
+        $value = trim($value);
+        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) ? $value : '';
     }
 
     private function generarExcelPorEstado(array $rows, string $nombre): void

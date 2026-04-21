@@ -13,7 +13,7 @@ $rechazadas = count(array_filter($solicitudes, fn($s) => in_array($s['ESTADO'], 
 <div class="page-header animate-fade-down" style="display:flex;justify-content:space-between;align-items:center;">
   
   <div>
-    <h1 class="page-title">Panel de Administración</h1>
+    <h1 class="page-title">Panel de Empleado</h1>
     <p style="color:var(--muted);font-size:14px;margin-top:4px">
       Vista general del sistema de solicitudes
     </p>
@@ -22,10 +22,6 @@ $rechazadas = count(array_filter($solicitudes, fn($s) => in_array($s['ESTADO'], 
   <div style="display:flex;gap:10px;">
     <a href="<?= $baseUrl ?>/solicitud/crear" class="btn btn-green">
       + Nueva solicitud
-    </a>
-
-    <a href="<?= $baseUrl ?>/exportar/todas/excel" class="btn btn-green">
-      Descargar reporte Excel
     </a>
   </div>
 
@@ -62,17 +58,20 @@ $rechazadas = count(array_filter($solicitudes, fn($s) => in_array($s['ESTADO'], 
 <?php else: ?>
 <div class="ugc-table-wrap animate-fade-up">
   <table class="ugc-table">
-    <thead><tr><th>#</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <thead><tr><th>#</th><th>Tipo DE SOLICITUD</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Acciones</th></tr></thead>
     <tbody>
     <?php foreach ($solicitudes as $s): ?>
     <tr>
       <td data-label="#"><?= $s['ID'] ?></td>
-      <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?> <?= !empty($s['RUTA_COMPROBANTE']) ? '<span title="Tiene PDF adjunto">📎</span>' : '' ?></td>
+      <td data-label="Tipo DE SOLICITUD"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?></td>
       <td data-label="Inicio"><?= substr($s['FECHA_INICIO'], 0, 10) ?></td>
       <td data-label="Fin"><?= substr($s['FECHA_FIN'], 0, 10) ?></td>
       <td data-label="Estado"><?= badgeEstado($s['ESTADO']) ?></td>
       <td class="actions-cell">
         <a href="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/ver" class="btn btn-outline btn-sm">Ver</a>
+        <?php if (!empty($s['RUTA_COMPROBANTE'])): ?>
+          <a href="<?= $baseUrl ?>/<?= htmlspecialchars($s['RUTA_COMPROBANTE']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Ver PDF</a>
+        <?php endif; ?>
         <?php if ($s['ESTADO'] === 'PENDIENTE_JEFE'): ?>
           <a href="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/editar" class="btn btn-gray btn-sm">Editar</a>
           <form method="post" action="<?= $baseUrl ?>/solicitud/<?= $s['ID'] ?>/eliminar" class="inline-form" onsubmit="return confirm('¿Eliminar esta solicitud?')">

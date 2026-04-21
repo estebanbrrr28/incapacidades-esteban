@@ -10,7 +10,10 @@ $baseUrl = Config::baseUrl();
     <h1 class="page-title">Panel de Jefe Inmediato</h1>
     <p style="color:var(--muted);font-size:14px;margin-top:4px">Gestiona las solicitudes de tu equipo</p>
   </div>
-  <a href="<?= $baseUrl ?>/solicitud/crear" class="btn btn-green">+ Nueva solicitud</a>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="<?= $baseUrl ?>/solicitud/crear" class="btn btn-green">+ Nueva solicitud</a>
+    <a href="<?= $baseUrl ?>/exportar/todas/excel" class="btn btn-outline">Descargar reporte Excel</a>
+  </div>
 </div>
 
 <div class="stats-row animate-fade-up" style="grid-template-columns:repeat(3,1fr)">
