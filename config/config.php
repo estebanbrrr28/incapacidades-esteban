@@ -59,5 +59,7 @@ define('USUARIOS_PRUEBA', [
     '22222222' => ['cedula' => '22222222', 'nombre' => 'María Jefe (Prueba)', 'email' => 'jefe@ugc.edu.co', 'rol' => ROL_JEFE, 'nivel' => 5, 'centro_costo' => '2312101', 'nit_jefe' => '44444444', 'nombre_jefe' => 'Ana Admin (Prueba)'],
     '33333333' => ['cedula' => '33333333', 'nombre' => 'Carlos Talento Humano (Prueba)', 'email' => 'rrhh@ugc.edu.co', 'rol' => ROL_RRHH, 'nivel' => 60, 'centro_costo' => '2413001', 'nit_jefe' => '44444444', 'nombre_jefe' => 'Ana Admin (Prueba)'],
     '44444444' => ['cedula' => '44444444', 'nombre' => 'Ana Administrador (Prueba)', 'email' => 'admin@ugc.edu.co', 'rol' => ROL_ADMIN, 'nivel' => 7, 'centro_costo' => '1020001', 'nit_jefe' => null, 'nombre_jefe' => null],
-    '55555555' => ['cedula' => '55555555', 'nombre' => 'Pedro Aprendiz (Prueba)', 'email' => 'aprendiz@ugc.edu.co', 'rol' => ROL_EMPLEADO, 'nivel' => 10, 'centro_costo' => '2411001', 'nit_jefe' => null, 'nombre_jefe' => null],
+    '55555555'   => ['cedula' => '55555555',   'nombre' => 'Pedro Aprendiz (Prueba)',          'email' => 'aprendiz@ugc.edu.co',   'rol' => ROL_EMPLEADO, 'nivel' => 10, 'centro_costo' => '2411001', 'nit_jefe' => null,       'nombre_jefe' => null],
+    '1012344984' => ['cedula' => '1012344984', 'nombre' => 'Esteban Solicitante (Prueba)',      'email' => 'esteban@ugc.edu.co',    'rol' => ROL_EMPLEADO, 'nivel' => 30, 'centro_costo' => '2312101', 'nit_jefe' => '44444444', 'nombre_jefe' => 'Ana Admin (Prueba)'],
+    '1012344984-admin' => ['cedula' => '1012344984-admin', 'nombre' => 'Esteban Admin (Prueba)', 'email' => 'esteban@ugc.edu.co', 'rol' => ROL_ADMIN,    'nivel' => 7,  'centro_costo' => '1020001', 'nit_jefe' => null,       'nombre_jefe' => null],
 ]);

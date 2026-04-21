@@ -30,6 +30,7 @@ final class Router
         'POST' => [
             '/login'                         => [AuthController::class, 'loginPost'],
             '/logout'                        => [AuthController::class, 'logout'],
+            '/admin/roles'                   => [DashboardController::class, 'updateUserRole'],
             '/solicitud/crear'               => [SolicitudController::class, 'crearPost'],
             '/api/notificaciones/leer-todas' => [NotificacionController::class, 'marcarTodasLeidas'],
         ],

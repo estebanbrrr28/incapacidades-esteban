@@ -977,6 +977,17 @@ body{background:radial-gradient(circle at top left,rgba(103,183,125,.12),transpa
 .analytics-field input,.analytics-field select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);font:inherit;transition:var(--tr)}
 .analytics-field input:focus,.analytics-field select:focus{outline:none;border-color:var(--green2);box-shadow:0 0 0 4px rgba(103,183,125,.14)}
 .analytics-filter-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.role-manager-card{margin-top:24px}
+.role-manager-header{margin:0 0 18px}
+.role-manager-copy{margin:6px 0 0;color:var(--muted);font-size:14px;max-width:760px}
+.role-manager-search{grid-template-columns:minmax(0,2fr) auto}
+.role-manager-field{max-width:420px}
+.role-manager-actions{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.role-manager-actions--inline{justify-content:flex-start}
+.role-manager-feedback{margin-top:16px;margin-bottom:0}
+.role-result-card{margin-top:18px;padding:24px 28px}
+.role-detail-list{margin:0}
+.role-update-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:end;margin-top:22px;padding-top:22px;border-top:1px solid #edf4ee}
 .analytics-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:24px 0}
 .analytics-panel{padding:22px}
 .analytics-panel h3{font-size:18px;font-weight:800;color:var(--green);margin-bottom:6px}
@@ -1015,6 +1026,7 @@ body{background:radial-gradient(circle at top left,rgba(103,183,125,.12),transpa
 @media(max-width:768px){
   .analytics-grid{grid-template-columns:1fr}
   .analytics-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .role-manager-search,.role-update-form{grid-template-columns:1fr}
   .analytics-summary-item{grid-template-columns:1fr;gap:6px}
   .analytics-bar-row{grid-template-columns:1fr;gap:8px}
   .analytics-month{height:180px}
@@ -1023,6 +1035,7 @@ body{background:radial-gradient(circle at top left,rgba(103,183,125,.12),transpa
 
 @media(max-width:600px){
   .analytics-filter-grid{grid-template-columns:1fr}
+  .role-manager-field{max-width:none}
   .analytics-actions,.analytics-filter-actions{width:100%}
   .analytics-actions .btn,.analytics-filter-actions .btn{width:100%}
 }

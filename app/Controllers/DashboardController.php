@@ -8,6 +8,8 @@ use Core\Controller;
 use Core\Session;
 use Core\Security;
 use Core\Config;
+use Core\Flash;
+use App\Models\EmpleadoModel;
 use App\Models\SolicitudModel;
 use App\Exportar\Admin\ExportModel;
 
@@ -25,7 +27,34 @@ final class DashboardController extends Controller
                 $stats = $model->contarPorEstado();
                 $todas = $model->getAll();
                 $filtros = ['estado' => '', 'tipo' => ''];
-                $this->render('admin/dashboard', compact('user', 'stats', 'todas', 'tipos', 'filtros'));
+                $empleadoModel = new EmpleadoModel();
+                $cedulaBusqueda = $this->sanitizeNit($_GET['cedula'] ?? '');
+                $usuarioRol = null;
+                $roleSearchError = null;
+
+                if ($cedulaBusqueda !== '') {
+                    $usuarioRol = $empleadoModel->getDetalleRol($cedulaBusqueda);
+                    if ($usuarioRol === null) {
+                        $roleSearchError = 'No se encontró un usuario activo con esa cédula.';
+                    }
+                }
+
+                $rolesDisponibles = $this->getRoleLabels();
+
+                $this->render(
+                    'admin/dashboard',
+                    compact(
+                        'user',
+                        'stats',
+                        'todas',
+                        'tipos',
+                        'filtros',
+                        'cedulaBusqueda',
+                        'usuarioRol',
+                        'roleSearchError',
+                        'rolesDisponibles'
+                    )
+                );
                 break;
 
             case ROL_RRHH:
@@ -63,6 +92,52 @@ final class DashboardController extends Controller
         $stats = $model->contarPorEstado();
 
         $this->render('admin/dashboard', compact('user', 'todas', 'tipos', 'stats', 'filtros'));
+    }
+
+    public function updateUserRole(): void
+    {
+        $this->requireRole([ROL_ADMIN]);
+        $this->validateCsrf();
+
+        $cedula = $this->sanitizeNit($_POST['cedula'] ?? '');
+        $rolSolicitado = Security::sanitizeString($_POST['rol'] ?? '');
+        $redirectPath = '/dashboard' . ($cedula !== '' ? '?cedula=' . urlencode($cedula) : '');
+
+        if ($cedula === '') {
+            Flash::error('Ingresa una cédula válida para cambiar el rol.');
+            $this->redirect('/dashboard');
+        }
+
+        $empleadoModel = new EmpleadoModel();
+        $usuarioRol = $empleadoModel->getDetalleRol($cedula);
+        if ($usuarioRol === null) {
+            Flash::error('No se encontró un usuario activo con esa cédula.');
+            $this->redirect($redirectPath);
+        }
+
+        $nuevoRol = $rolSolicitado === 'auto' ? null : $rolSolicitado;
+        $labels = $this->getRoleLabels();
+
+        if ($nuevoRol !== null && !isset($labels[$nuevoRol])) {
+            Flash::error('Selecciona un rol válido.');
+            $this->redirect($redirectPath);
+        }
+
+        if (!$empleadoModel->guardarRolManual($cedula, $nuevoRol)) {
+            Flash::error('No se pudo guardar el cambio de rol. Revisa permisos de escritura del archivo de configuración.');
+            $this->redirect($redirectPath);
+        }
+
+        $rolEfectivo = $empleadoModel->getRol($cedula);
+        $this->refreshCurrentSessionRole($cedula, $rolEfectivo, $empleadoModel);
+
+        if ($nuevoRol === null) {
+            Flash::success('El usuario volvió al rol automático según Oracle.');
+        } else {
+            Flash::success('Rol actualizado a ' . ($labels[$rolEfectivo] ?? $rolEfectivo) . '.');
+        }
+
+        $this->redirect($redirectPath);
     }
 
     public function analytics(): void
@@ -297,5 +372,41 @@ final class DashboardController extends Controller
         ];
 
         return ($months[$matches[2]] ?? $matches[2]) . ' ' . $matches[1];
+    }
+
+    private function sanitizeNit(string $value): string
+    {
+        return preg_replace('/\D+/', '', trim($value));
+    }
+
+    private function getRoleLabels(): array
+    {
+        return [
+            ROL_ADMIN => 'Administrador',
+            ROL_RRHH => 'Talento Humano',
+            ROL_JEFE => 'Jefe Inmediato',
+            ROL_EMPLEADO => 'Solicitante',
+        ];
+    }
+
+    private function refreshCurrentSessionRole(string $cedula, string $rol, EmpleadoModel $empleadoModel): void
+    {
+        $user = $this->user();
+        if (($user['cedula'] ?? '') !== $cedula) {
+            return;
+        }
+
+        $user['rol'] = $rol;
+
+        if (in_array($rol, [ROL_ADMIN, ROL_RRHH], true)) {
+            $user['nit_jefe'] = null;
+            $user['nombre_jefe'] = null;
+        } else {
+            $jefe = $empleadoModel->getJefeInmediato($cedula);
+            $user['nit_jefe'] = $jefe['NIT_JEFE'] ?? null;
+            $user['nombre_jefe'] = $jefe['NOMBRE_JEFE'] ?? null;
+        }
+
+        Session::setUser($user);
     }
 }

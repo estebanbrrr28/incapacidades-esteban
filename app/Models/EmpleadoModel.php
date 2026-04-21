@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Core\Model;
+use App\Models\RoleOverrideModel;
 
 final class EmpleadoModel extends Model
 {
@@ -22,25 +23,53 @@ final class EmpleadoModel extends Model
 
     public function getRol(string $nit): string
     {
+        $nit = preg_replace('/\D+/', '', $nit);
+
+        $overrideRole = (new RoleOverrideModel())->getRole($nit);
+        if ($overrideRole !== null) {
+            return $overrideRole;
+        }
+
+        return $this->getRolBase($nit);
+    }
+
+    public function getRolBase(string $nit): string
+    {
         $emp = $this->getByNit($nit);
+        return $this->resolveBaseRole($emp);
+    }
+
+    public function getDetalleRol(string $nit): ?array
+    {
+        $nit = preg_replace('/\D+/', '', $nit);
+        $emp = $this->getByNit($nit);
+
         if (!$emp) {
-            return ROL_EMPLEADO;
+            return null;
         }
 
-        $nivel = (int) ($emp['NIVEL'] ?? 0);
-        $cc    = $emp['CENTRO_COSTO'] ?? '';
+        $rolManual = (new RoleOverrideModel())->getRole($nit);
+        $rolBase = $this->resolveBaseRole($emp);
 
-        if ($nivel >= NIVEL_MIN_ADMIN) {
-            return ROL_ADMIN;
-        }
-        if (in_array($cc, CC_RRHH, true)) {
-            return ROL_RRHH;
-        }
-        if ($nivel >= NIVEL_MIN_JEFE) {
-            return ROL_JEFE;
+        return [
+            'cedula' => (string) ($emp['NIT'] ?? $nit),
+            'nombre' => (string) ($emp['NOMBRE_COMPLETO'] ?? ''),
+            'centro_costo' => (string) ($emp['CENTRO_COSTO'] ?? ''),
+            'nivel' => (int) ($emp['NIVEL'] ?? 0),
+            'rol_base' => $rolBase,
+            'rol_manual' => $rolManual,
+            'rol_actual' => $rolManual ?? $rolBase,
+        ];
+    }
+
+    public function guardarRolManual(string $nit, ?string $rol): bool
+    {
+        $nit = preg_replace('/\D+/', '', $nit);
+        if ($nit === '') {
+            return false;
         }
 
-        return ROL_EMPLEADO;
+        return (new RoleOverrideModel())->setRole($nit, $rol);
     }
 
     public function getJefeInmediato(string $nit): ?array
@@ -121,5 +150,27 @@ final class EmpleadoModel extends Model
             return false;
         }
         return in_array($emp['CENTRO_COSTO'] ?? '', CC_RRHH, true);
+    }
+
+    private function resolveBaseRole(?array $emp): string
+    {
+        if (!$emp) {
+            return ROL_EMPLEADO;
+        }
+
+        $nivel = (int) ($emp['NIVEL'] ?? 0);
+        $cc    = $emp['CENTRO_COSTO'] ?? '';
+
+        if ($nivel >= NIVEL_MIN_ADMIN) {
+            return ROL_ADMIN;
+        }
+        if (in_array($cc, CC_RRHH, true)) {
+            return ROL_RRHH;
+        }
+        if ($nivel >= NIVEL_MIN_JEFE) {
+            return ROL_JEFE;
+        }
+
+        return ROL_EMPLEADO;
     }
 }

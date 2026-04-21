@@ -80,11 +80,12 @@ final class SolicitudController extends Controller
             'ruta_archivo'      => null,
         ];
 
-        // Procesar archivo PDF si se ha subido
-        $rutaArchivo = $this->procesarArchivoPDF($user['cedula']);
-        if ($rutaArchivo !== false) {
-            $data['ruta_archivo'] = $rutaArchivo;
+        $rutaArchivo = $this->procesarArchivoPDF($user['cedula'], true);
+        if ($rutaArchivo === false || $rutaArchivo === null) {
+            $this->redirect('/solicitud/crear');
         }
+
+        $data['ruta_archivo'] = $rutaArchivo;
 
         $model = new SolicitudModel();
         $ok = $model->crear($data);
@@ -110,10 +111,15 @@ final class SolicitudController extends Controller
         $this->redirect('/dashboard');
     }
 
-    private function procesarArchivoPDF(string $nitEmpleado): string|false
+    private function procesarArchivoPDF(string $nitEmpleado, bool $required = false): string|false|null
     {
         if (!isset($_FILES['documento_pdf']) || $_FILES['documento_pdf']['error'] === UPLOAD_ERR_NO_FILE) {
-            return null; // No hay archivo, es opcional
+            if ($required) {
+                Flash::error('Debes adjuntar un archivo PDF para enviar la solicitud.');
+                return false;
+            }
+
+            return null;
         }
 
         $archivo = $_FILES['documento_pdf'];

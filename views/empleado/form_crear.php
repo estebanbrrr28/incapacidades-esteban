@@ -57,12 +57,12 @@ $baseUrl    = Config::baseUrl();
     </div>
     <div class="form-group"><label>Observaciones</label><textarea name="observaciones" rows="4" placeholder="Describe el motivo..."></textarea></div>
     <div class="form-group">
-      <label>Documento adjunto (PDF, máx. 5MB)</label>
+      <label>Documento adjunto (PDF, máx. 5MB) *</label>
       <div class="file-upload-container">
-        <input type="file" name="documento_pdf" id="documento_pdf" accept=".pdf,application/pdf" />
+        <input type="file" name="documento_pdf" id="documento_pdf" accept=".pdf,application/pdf" required />
         <div class="file-upload-hint">
           <span class="hint-icon">📄</span>
-          <span>Formato permitido: PDF. Tamaño máximo: 5MB</span>
+          <span>Archivo obligatorio. Formato permitido: PDF. Tamaño máximo: 5MB</span>
         </div>
       </div>
       <div id="pdf-preview-container" class="pdf-preview-container" style="display:none;">
@@ -108,6 +108,7 @@ $baseUrl    = Config::baseUrl();
     if(ini.value<hoy){e.preventDefault();alert('La fecha de inicio no puede ser anterior a hoy.');return;}
     if(fin.value&&fin.value<ini.value){e.preventDefault();alert('La fecha fin no puede ser anterior al inicio.');}
     if(!validarHoras()){e.preventDefault();return;}
+    if(!fileInput.files||!fileInput.files.length){e.preventDefault();showError('Debes adjuntar un archivo PDF para enviar la solicitud.');return;}
   });
   calcularDias();
 
