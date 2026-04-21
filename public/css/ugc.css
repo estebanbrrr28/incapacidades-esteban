@@ -54,6 +54,7 @@ body{background:radial-gradient(circle at top left,rgba(103,183,125,.12),transpa
 .animate-fade-up{animation:fadeUp .4s ease both;animation-delay:.06s}
 .animate-fade-in{animation:fadeIn .4s ease both}
 .animate-shake{animation:shake .4s ease both}
+.d-none{display:none!important}
 
 /* HEADER MODERNO */
 .ugc-header{background:linear-gradient(135deg,var(--header-start) 0%,var(--header-end) 100%);color:#fff;display:flex;align-items:center;gap:16px;padding:0 32px;height:72px;position:sticky;top:0;z-index:100;box-shadow:0 16px 34px rgba(63,142,86,.22);backdrop-filter:blur(10px)}
