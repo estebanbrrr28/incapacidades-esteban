@@ -19,16 +19,21 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
   </div>
 </div>
 
-<div class="stats-row animate-fade-up" style="grid-template-columns:repeat(3,1fr)" id="jefe-stat-cards">
+<div class="stats-row animate-fade-up" style="grid-template-columns:repeat(4,1fr)" id="jefe-stat-cards">
   <a href="#jefe-pendientes" class="stat-card stat-card-link is-active" data-filter="todo">
     <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
-    <div class="num"><?= count($pendientesRows) + count($misSolicitudesRows) ?></div>
+    <div class="num"><?= count($pendientesRows) + count($misSolicitudesRows) + count($gestionadasRows) ?></div>
     <div class="lbl">Todo</div>
   </a>
   <a href="#jefe-pendientes" class="stat-card stat-card-link" data-filter="pendientes">
     <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
     <div class="num"><?= count($pendientesRows) ?></div>
     <div class="lbl">Pendientes de Aprobación</div>
+  </a>
+  <a href="#jefe-section-gestionadas" class="stat-card stat-card-link" data-filter="gestionadas">
+    <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="num"><?= count($gestionadasRows) ?></div>
+    <div class="lbl">Gestionadas</div>
   </a>
   <a href="#jefe-mis-solicitudes" class="stat-card stat-card-link" data-filter="mis">
     <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
@@ -133,11 +138,18 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
 (function () {
   var tarjetas = document.querySelectorAll('#jefe-stat-cards [data-filter]');
   var secciones = {
-    todo:       ['jefe-section-pendientes', 'jefe-section-gestionadas', 'jefe-section-mis'],
-    pendientes: ['jefe-section-pendientes'],
-    mis:        ['jefe-section-mis']
+    todo:        ['jefe-section-pendientes', 'jefe-section-gestionadas', 'jefe-section-mis'],
+    pendientes:  ['jefe-section-pendientes'],
+    gestionadas: ['jefe-section-gestionadas'],
+    mis:         ['jefe-section-mis']
   };
   var todas = ['jefe-section-pendientes', 'jefe-section-gestionadas', 'jefe-section-mis'];
+  var anclas = {
+    todo:        'jefe-pendientes',
+    pendientes:  'jefe-pendientes',
+    gestionadas: 'jefe-section-gestionadas',
+    mis:         'jefe-mis-solicitudes'
+  };
 
   function filtrarJefe(f) {
     tarjetas.forEach(function (c) {
@@ -148,8 +160,8 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
       var el = document.getElementById(id);
       if (el) el.style.display = mostrar.indexOf(id) !== -1 ? '' : 'none';
     });
-    var ancla = f === 'mis' ? 'jefe-mis-solicitudes' : 'jefe-pendientes';
-    var sec = document.getElementById(ancla);
+    var anclaId = anclas[f] || 'jefe-pendientes';
+    var sec = document.getElementById(anclaId);
     if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 

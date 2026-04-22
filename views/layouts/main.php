@@ -60,7 +60,7 @@ $isRouteActive = static function (string $route) use ($baseUrl, $currentPath): b
     <?php if ($showPrimaryNav): ?>
     <nav id="primaryNav" class="header-nav" data-main-nav>
       <a href="<?= $baseUrl ?>/dashboard" class="nav-pill <?= $isRouteActive('/dashboard') && !$isRouteActive('/dashboard/analitica') && !$isRouteActive('/dashboard/roles') ? 'is-active' : '' ?>">Inicio</a>
-      <?php if (in_array($user['rol'] ?? '', [ROL_ADMIN, ROL_RRHH, ROL_JEFE], true)): ?>
+      <?php if (in_array($user['rol'] ?? '', [ROL_ADMIN, ROL_RRHH], true)): ?>
         <a href="<?= $baseUrl ?>/solicitudes" class="nav-pill <?= $isRouteActive('/solicitudes') ? 'is-active' : '' ?>">Todas las solicitudes</a>
       <?php endif; ?>
       <?php if (in_array($user['rol'] ?? '', [ROL_EMPLEADO, ROL_JEFE], true)): ?>

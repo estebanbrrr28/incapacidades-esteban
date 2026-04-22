@@ -33,7 +33,10 @@ final class NotificacionModel extends Model
     public function getNoLeidas(string $nit): array
     {
         return $this->db->query(
-            "SELECT n.*, s.TIPO_SOLICITUD, s.NIT_EMPLEADO, s.ACTIVO as SOLICITUD_ACTIVA
+            "SELECT n.ID, n.NIT_DESTINATARIO, n.TIPO, n.MENSAJE, n.ID_SOLICITUD, n.LEIDA,
+                    TO_CHAR(n.FECHA_CREACION, 'YYYY-MM-DD\"T\"HH24:MI:SS') AS FECHA_CREACION,
+                    TO_CHAR(n.FECHA_LECTURA,  'YYYY-MM-DD\"T\"HH24:MI:SS') AS FECHA_LECTURA,
+                    s.TIPO_SOLICITUD, s.NIT_EMPLEADO, s.ACTIVO as SOLICITUD_ACTIVA
              FROM ICEBERG.NOTIFICACIONES n
              JOIN ICEBERG.SOLICITUDES_PERMISOS s ON s.ID = n.ID_SOLICITUD
              WHERE n.NIT_DESTINATARIO = :nit AND n.LEIDA = 0 AND s.ACTIVO = 1
@@ -49,7 +52,10 @@ final class NotificacionModel extends Model
     public function getTodas(string $nit, int $limite = 50): array
     {
         return $this->db->query(
-            "SELECT n.*, s.TIPO_SOLICITUD, s.NIT_EMPLEADO, s.ACTIVO as SOLICITUD_ACTIVA
+            "SELECT n.ID, n.NIT_DESTINATARIO, n.TIPO, n.MENSAJE, n.ID_SOLICITUD, n.LEIDA,
+                    TO_CHAR(n.FECHA_CREACION, 'YYYY-MM-DD\"T\"HH24:MI:SS') AS FECHA_CREACION,
+                    TO_CHAR(n.FECHA_LECTURA,  'YYYY-MM-DD\"T\"HH24:MI:SS') AS FECHA_LECTURA,
+                    s.TIPO_SOLICITUD, s.NIT_EMPLEADO, s.ACTIVO as SOLICITUD_ACTIVA
              FROM ICEBERG.NOTIFICACIONES n
              JOIN ICEBERG.SOLICITUDES_PERMISOS s ON s.ID = n.ID_SOLICITUD
              WHERE n.NIT_DESTINATARIO = :nit AND s.ACTIVO = 1

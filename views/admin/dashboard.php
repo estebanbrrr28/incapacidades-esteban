@@ -24,10 +24,12 @@ $total = array_sum($stats ?? []);
     </p>
   </div>
 
-  <div style="display:flex;gap:10px;">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <?php if ($esAdminReal ?? false): ?>
     <a href="<?= $baseUrl ?>/dashboard/analitica" class="btn btn-outline">
-      Ver analitica
+      Ver analítica
     </a>
+    <?php endif; ?>
 
     <a href="<?= $baseUrl ?>/solicitud/crear" class="btn btn-green">
       + Nueva solicitud

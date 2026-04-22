@@ -62,9 +62,15 @@ final class AuthController extends Controller
             ? $empleadoModel->getJefeInmediato($cedula)
             : null;
 
+        // Si LDAP no devolvió nombre (cayó al fallback de la cédula), usar el de Oracle
+        $nombreFinal = $ldap['nombre'];
+        if ($nombreFinal === $cedula && !empty($empleado['NOMBRE_COMPLETO'])) {
+            $nombreFinal = $empleado['NOMBRE_COMPLETO'];
+        }
+
         Session::setUser([
             'cedula'        => $cedula,
-            'nombre'        => $ldap['nombre'],
+            'nombre'        => $nombreFinal,
             'email'         => $ldap['email'],
             'nivel'         => (int) ($empleado['NIVEL'] ?? 0),
             'centro_costo'  => $empleado['CENTRO_COSTO'] ?? '',

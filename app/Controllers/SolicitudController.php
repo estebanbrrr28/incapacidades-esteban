@@ -20,6 +20,7 @@ final class SolicitudController extends Controller
         $user = $this->user();
 
         $empleadoModel = new EmpleadoModel();
+        $user = $this->refreshUserBossIfNeeded($user, $empleadoModel);
         $esAprendiz = $empleadoModel->esAprendiz($user['centro_costo'] ?? '');
 
         if (!$esAprendiz && empty($user['nit_jefe'])) {
@@ -57,6 +58,7 @@ final class SolicitudController extends Controller
 
         $user = $this->user();
         $empleadoModel = new EmpleadoModel();
+        $user = $this->refreshUserBossIfNeeded($user, $empleadoModel);
         $esAprendiz = $empleadoModel->esAprendiz($user['centro_costo'] ?? '');
 
         $nitJefe = $esAprendiz
@@ -181,6 +183,24 @@ final class SolicitudController extends Controller
 
         // Retornar ruta relativa para almacenar en BD
         return 'uploads/solicitudes/' . $nombreUnico;
+    }
+
+    private function refreshUserBossIfNeeded(array $user, EmpleadoModel $empleadoModel): array
+    {
+        if (empty($user['cedula']) || !empty($user['nit_jefe']) || in_array($user['rol'] ?? '', [ROL_ADMIN, ROL_RRHH], true)) {
+            return $user;
+        }
+
+        $jefe = $empleadoModel->getJefeInmediato((string) $user['cedula']);
+        if (!$jefe || empty($jefe['NIT_JEFE'])) {
+            return $user;
+        }
+
+        $user['nit_jefe'] = $jefe['NIT_JEFE'];
+        $user['nombre_jefe'] = $jefe['NOMBRE_JEFE'] ?? null;
+        Session::setUser($user);
+
+        return $user;
     }
 
     public function editarForm(string $id): void

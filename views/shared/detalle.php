@@ -27,7 +27,12 @@ $baseUrl = Config::baseUrl();
         <div class="archivo-adjunto" style="margin:0;max-width:400px;">
           <span class="archivo-icono">📑</span>
           <div class="archivo-info">
-            <div class="archivo-nombre"><?= htmlspecialchars(basename($solicitud['RUTA_COMPROBANTE'])) ?></div>
+            <div class="archivo-nombre"><?php
+              $rawName = pathinfo(basename($solicitud['RUTA_COMPROBANTE']), PATHINFO_FILENAME);
+              $parts = explode('_', $rawName);
+              $label = count($parts) >= 4 ? implode('_', array_slice($parts, 3)) : $rawName;
+              echo htmlspecialchars($label ?: 'Documento') . '.pdf';
+            ?></div>
           </div>
           <a href="<?= $baseUrl ?>/<?= htmlspecialchars($solicitud['RUTA_COMPROBANTE']) ?>" target="_blank" class="archivo-ver">Ver PDF</a>
         </div>
