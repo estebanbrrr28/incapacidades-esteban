@@ -29,8 +29,8 @@ define('ROL_RRHH',     'talento_humano');
 define('ROL_JEFE',     'jefe_inmediato');
 define('ROL_EMPLEADO', 'solicitante');
 
-define('CC_RRHH', ['2413001', '2413002', '2413003', '2413004']);
-define('CC_APRENDICES', ['2411001', '2411002', '2411004']);
+define('CC_RRHH', ['2411001']);
+define('CC_APRENDICES', ['2411004']);
 
 define('NIVEL_MIN_JEFE', 4);
 define('NIVEL_MIN_ADMIN', 7);

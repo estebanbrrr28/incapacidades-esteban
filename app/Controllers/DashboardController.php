@@ -65,8 +65,14 @@ final class DashboardController extends Controller
         $todas = $model->getAll($filtros);
         $tipos = TIPOS_SOLICITUD;
         $stats = $model->contarPorEstado();
+        $esAdminReal = false;
 
-        $this->render('admin/dashboard', compact('user', 'todas', 'tipos', 'stats', 'filtros'));
+        if (($user['rol'] ?? '') === ROL_ADMIN) {
+            $rolBase = (new EmpleadoModel())->getRolBase($user['cedula']);
+            $esAdminReal = ($rolBase === ROL_ADMIN);
+        }
+
+        $this->render('admin/dashboard', compact('user', 'todas', 'tipos', 'stats', 'filtros', 'esAdminReal'));
     }
 
     public function updateUserRole(): void

@@ -55,7 +55,7 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
     <tr>
       <td data-label="#"><?= $s['ID'] ?></td>
       <td data-label="Empleado"><?= htmlspecialchars($s['NIT_EMPLEADO']) ?></td>
-      <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?> <?= !empty($s['RUTA_COMPROBANTE']) ? '<span title="Tiene PDF adjunto">📎</span>' : '' ?></td>
+        <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?></td>
       <td data-label="Inicio"><?= substr($s['FECHA_INICIO'], 0, 10) ?></td>
       <td data-label="Fin"><?= substr($s['FECHA_FIN'], 0, 10) ?></td>
       <td data-label="Estado"><?= badgeEstado($s['ESTADO']) ?></td>
@@ -112,7 +112,7 @@ $gestionadasRows    = is_array($gestionadas ?? null) ? $gestionadas : [];
     <?php foreach ($misSolicitudesRows as $s): ?>
     <tr>
       <td data-label="#"><?= $s['ID'] ?></td>
-      <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?> <?= !empty($s['RUTA_COMPROBANTE']) ? '<span title="Tiene PDF adjunto">📎</span>' : '' ?></td>
+        <td data-label="Tipo"><?= htmlspecialchars($tipos[$s['TIPO_SOLICITUD']] ?? $s['TIPO_SOLICITUD']) ?></td>
       <td data-label="Inicio"><?= substr($s['FECHA_INICIO'], 0, 10) ?></td>
       <td data-label="Fin"><?= substr($s['FECHA_FIN'], 0, 10) ?></td>
       <td data-label="Estado"><?= badgeEstado($s['ESTADO']) ?></td>

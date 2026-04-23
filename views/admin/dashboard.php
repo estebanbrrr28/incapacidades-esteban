@@ -14,11 +14,12 @@ $icons = [
 ];
 
 $total = array_sum($stats ?? []);
+$panelTitle = (($user['rol'] ?? '') === ROL_RRHH) ? 'Panel de Talento Humano' : 'Panel de Administrador';
 ?>
 <div class="page-header animate-fade-down" style="display:flex;justify-content:space-between;align-items:center;">
   
   <div>
-    <h1 class="page-title">Panel de Administración</h1>
+    <h1 class="page-title"><?= $panelTitle ?></h1>
     <p style="color:var(--muted);font-size:14px;margin-top:4px">
       Vista general del sistema de solicitudes
     </p>
@@ -37,10 +38,6 @@ $total = array_sum($stats ?? []);
 
     <a href="<?= $baseUrl ?>/exportar/todas/excel" class="btn btn-green">
       Descargar reporte Excel
-    </a>
-
-    <a href="<?= $baseUrl ?>/dashboard/roles" class="btn btn-green">
-      Gestionar roles
     </a>
   </div>
 
